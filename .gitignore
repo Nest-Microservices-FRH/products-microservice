@@ -1,4 +1,5 @@
-/prisma/*
+/prisma/migrations
+/prisma/dev.db
 
 # compiled output
 /dist
