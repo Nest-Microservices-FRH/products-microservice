@@ -44,7 +44,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
     async findOne(id: number): Promise<Product> {
         const product = await this.product.findUnique({
-            where: { id },
+            where: {
+                id,
+                available: true,
+            },
         });
 
         if (!product) {
