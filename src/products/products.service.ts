@@ -3,6 +3,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaClient } from '@prisma/client';
 import { Product } from './entities/product.entity';
+import { PaginationDto } from 'src/common';
+import { ProductFindAllResponse } from './interfaces';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -19,8 +21,25 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         });
     }
 
-    findAll() {
-        return this.product.findMany({});
+    async findAll(
+        paginationDto: PaginationDto,
+    ): Promise<ProductFindAllResponse> {
+        const { limit, page } = paginationDto;
+
+        const totalPage = await this.product.count();
+        const lastPage = Math.ceil(totalPage / limit);
+
+        return {
+            data: await this.product.findMany({
+                take: limit,
+                skip: (page - 1) * limit,
+            }),
+            meta: {
+                total: totalPage,
+                page,
+                lastPage,
+            },
+        };
     }
 
     findOne(id: number) {

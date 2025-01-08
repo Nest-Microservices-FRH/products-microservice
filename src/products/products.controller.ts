@@ -4,6 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common';
 import { Product } from './entities/product.entity';
+import { ProductFindAllResponse } from './interfaces';
 
 @Controller('products')
 export class ProductsController {
@@ -17,7 +18,7 @@ export class ProductsController {
   @Get()
   findAll(
     @Query() paginationDto: PaginationDto,
-  ): Promise<Product[]> {
+  ): Promise<ProductFindAllResponse> {
       return this.productsService.findAll(paginationDto);
   }
 
