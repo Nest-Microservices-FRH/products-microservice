@@ -54,11 +54,28 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         return product;
     }
 
-    update(id: number, updateProductDto: UpdateProductDto) {
-        return `This action updates a #${id} product`;
+    async update(
+        id: number,
+        updateProductDto: UpdateProductDto,
+    ): Promise<Product> {
+        if (Object.keys(updateProductDto).length === 0) {
+            throw new NotFoundException('Update data cannot be empty');
+        }
+
+        this.findOne(id);
+
+        return this.product.update({
+            where: { id },
+            data : updateProductDto,
+        });
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} product`;
+    async remove(id: number): Promise<Product> {
+        const product = await this.findOne(id);
+        await this.product.delete({
+            where: { id },
+        });
+
+        return product;
     }
 }
