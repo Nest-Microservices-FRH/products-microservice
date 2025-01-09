@@ -68,7 +68,9 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         id: number,
         updateProductDto: UpdateProductDto,
     ): Promise<Product> {
-        if (Object.keys(updateProductDto).length === 0) {
+        const { id: _, ...data } = updateProductDto;
+
+        if (Object.keys(data).length === 0) {
             throw new NotFoundException('Update data cannot be empty');
         }
 
@@ -76,7 +78,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
         return this.product.update({
             where: { id },
-            data : updateProductDto,
+            data,
         });
     }
 
