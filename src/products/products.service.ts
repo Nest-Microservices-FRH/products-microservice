@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { Product } from './entities/product.entity';
 import { PaginationDto } from 'src/common';
 import { ProductFindAllResponse } from './interfaces';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService extends PrismaClient implements OnModuleInit {
@@ -58,7 +59,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         });
 
         if (!product) {
-            throw new NotFoundException(`Product #${id} not found`);
+            throw new RpcException(`Product #${id} not found`);
         }
 
         return product;
