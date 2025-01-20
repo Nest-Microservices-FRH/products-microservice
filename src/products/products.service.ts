@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaClient } from '@prisma/client';
@@ -59,7 +59,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         });
 
         if (!product) {
-            throw new RpcException(`Product #${id} not found`);
+            throw new RpcException({
+                message: `Product #${id} not found`,
+                status : HttpStatus.BAD_REQUEST,
+            });
         }
 
         return product;
@@ -72,10 +75,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         const { id: _, ...data } = updateProductDto;
 
         if (Object.keys(data).length === 0) {
-            throw new NotFoundException('Update data cannot be empty');
+            throw new RpcException('Update data cannot be empty');
         }
 
-        this.findOne(id);
+        await this.findOne(id);
 
         return this.product.update({
             where: { id },
