@@ -52,4 +52,11 @@ export class ProductsController {
   ): Promise<Product> {
       return this.productsService.remove(id);
   }
+
+  @MessagePattern({ cmd: 'validate_products' })
+  validateProduct(
+    @Payload() ids: number[],
+  ){
+      return this.productsService.validateProducts(ids);
+  }
 }
